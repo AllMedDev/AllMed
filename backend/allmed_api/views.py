@@ -1,4 +1,6 @@
 from django.http import HttpResponse, JsonResponse
+from allmed_api import models
+import json
 # from django.views.decorators.csrf import csrf_exempt # Needed?
 
 
@@ -6,7 +8,11 @@ from django.http import HttpResponse, JsonResponse
 GET - lists of all the patients
 """
 def list_patients(request):
-    pass
+    if request.method == "GET":
+        patients = list(models.User.objects.filter(id__in=models.Patient.objects.all()).values())
+        return JsonResponse(patients, safe=False, status=200)
+
+
 
 """
 GET - list of all the doctors
