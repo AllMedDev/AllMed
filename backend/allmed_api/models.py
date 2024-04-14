@@ -21,12 +21,15 @@ class User(models.Model):
 
 
 class Patient(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
     
     
     
 class Doctor(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
+    # TODO add specializations
     
     
     

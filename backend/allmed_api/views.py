@@ -1,16 +1,31 @@
+from hmac import new
 from django.http import HttpResponse, JsonResponse
 from allmed_api import models
 import json
-# from django.views.decorators.csrf import csrf_exempt # Needed?
+from django.views.decorators.csrf import csrf_exempt # Needed?
 
 
 """
 GET - lists of all the patients
+POST - create new patient 
 """
+@csrf_exempt
 def list_patients(request):
     if request.method == "GET":
-        patients = list(models.User.objects.filter(id__in=models.Patient.objects.all()).values())
+        patients = list(models.User.objects.filter(id__in=models.Patient.objects.all().values('user')).values())
         return JsonResponse(patients, safe=False, status=200)
+    elif request.method == "POST":
+        user_dict = json.loads(request.body)
+        new_user = create_user(user_dict)
+        
+        new_patient = models.Patient.objects.create(user=new_user)
+        new_patient.save()
+        
+        return JsonResponse(user_dict, status=200)
+        
+    response = HttpResponse('Invalid method')
+    response.status_code = 405
+    return response
 
 
 
@@ -18,11 +33,17 @@ def list_patients(request):
 GET - list of all the doctors
 """
 def list_doctors(request):
-    pass
+    if request.method == "GET":
+        doctors = list(models.User.objects.filter(id__in=models.Doctor.objects.all()).values())
+        return JsonResponse(doctors, safe=False, status=200)
+    else:
+        response = HttpResponse("Invalid method")
+        response.status_code = 405
+        return response
 
 """
 GET - profile of user with user_id == pk
-POST - updates user's data
+PUT - updates user's data
 """
 def user_details(request, pk):
     pass
@@ -39,3 +60,12 @@ POST - create new appointment
 """
 def create_appointment(request):
     pass
+
+
+
+
+
+def create_user(user_dict):
+     new_user = models.User(**user_dict)
+     new_user.save()
+     return new_user
