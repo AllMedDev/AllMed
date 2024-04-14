@@ -31,15 +31,26 @@ def list_patients(request):
 
 """
 GET - list of all the doctors
+POST - create new doctor
 """
+@csrf_exempt
 def list_doctors(request):
     if request.method == "GET":
-        doctors = list(models.User.objects.filter(id__in=models.Doctor.objects.all()).values())
+        doctors = list(models.User.objects.filter(id__in=models.Doctor.objects.all().values('user')).values())
         return JsonResponse(doctors, safe=False, status=200)
-    else:
-        response = HttpResponse("Invalid method")
-        response.status_code = 405
-        return response
+    elif request.method == "POST":
+        # TODO add doctor's specializations
+        user_dict = json.loads(request.body)
+        new_user = create_user(user_dict)
+        
+        new_doctor = models.Doctor.objects.create(user=new_user)
+        new_doctor.save()
+        
+        return JsonResponse(user_dict, status=200)
+        
+    response = HttpResponse('Invalid method')
+    response.status_code = 405
+    return response
 
 """
 GET - profile of user with user_id == pk
