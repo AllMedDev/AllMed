@@ -1,0 +1,40 @@
+.filteringCol {
+    padding-left: 12%;
+    max-width: 600px;
+}
+
+.searchFilteringBar {
+    margin-top: 7%;
+}
+
+.cardListDoctors {
+    padding-top: 3%;
+    padding-left: 7%;
+}
+
+.scrollableFilterCheckBoxes {
+    max-height: 350px;
+    max-width: 380px;
+    overflow-y: auto;
+    padding-left: 5%;
+    padding-top: 2%;
+    margin-bottom: 7%;
+}
+
+.scrollableFilterCheckBoxes::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollableFilterCheckBoxes::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.scrollableFilterCheckBoxes::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+
+.scrollableFilterCheckBoxes::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
