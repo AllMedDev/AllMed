@@ -1,5 +1,4 @@
 from django.db import models
-# from phonenumber_field.modelfields import PhoneNumberField
 
 class User(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
@@ -9,7 +8,6 @@ class User(models.Model):
     first_name = models.CharField(max_length=32)
     surname = models.CharField(max_length=32)
     
-    # telephone = PhoneNumberField(blank=True)
     telephone = models.CharField(max_length=32)
     email = models.EmailField(max_length=64)
     
