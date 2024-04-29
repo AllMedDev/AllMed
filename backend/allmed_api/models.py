@@ -1,9 +1,10 @@
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
+# from phonenumber_field.modelfields import PhoneNumberField
 
 class User(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     pin = models.IntegerField()
+    specialization = models.CharField(max_length=64)
     
     first_name = models.CharField(max_length=32)
     surname = models.CharField(max_length=32)
@@ -29,7 +30,7 @@ class Patient(models.Model):
 class Doctor(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
-    # TODO add specializations
+    
     
     
     
