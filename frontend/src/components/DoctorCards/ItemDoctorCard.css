@@ -1,0 +1,14 @@
+.card-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-max-width {
+  max-width: 800px;
+}
+
+@media (max-width: 576px) {
+  .card-max-width {
+    max-width: 100%;
+  }
+}
