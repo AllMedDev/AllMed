@@ -1,0 +1,46 @@
+.navbar-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 1.6em;
+}
+
+.navbar-brand {
+    padding-left: 12%;
+    font-size: 1.5em;
+    color: rgb(97, 96, 96);
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar-nav {
+    padding-left: 40%;
+}
+
+.navbar-centered .navbar-brand {
+    color: rgb(97, 96, 96);
+}
+
+.navbar-centered .navbar-nav {
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.navbar-centered .nav-link {
+    color: rgb(97, 96, 96);
+}
+
+.navbar-centered .navbar-toggle {
+    position: absolute;
+    right: 20px;
+}
+
+.navbar-centered .navbar-offcanvas {
+    color: rgb(97, 96, 96);
+}
+
+.navbar-centered .nav-dropdown {
+    justify-content: center;
+    flex-grow: 1;
+}
