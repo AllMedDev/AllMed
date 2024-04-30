@@ -1,61 +1,107 @@
 from hmac import new
+from urllib import response
 from django.http import HttpResponse, JsonResponse
+from jsonschema import ValidationError
 from allmed_api import models
 import json
-from django.views.decorators.csrf import csrf_exempt # Needed?
+from django.contrib.auth import get_user_model, login, logout
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+from rest_framework import permissions, status
+from rest_framework.permissions import IsAuthenticated
 
 
-"""
-GET - lists of all the patients
-POST - create new patient 
-"""
-@csrf_exempt
-def list_patients(request):
-    if request.method == "GET":
+class IsDoctor(IsAuthenticated):
+    def has_permission(self, request, view):
+        if not super().has_permission(request, view):
+            return False
+    
+        return request.user.isDoctor
+
+class IsPatient(IsAuthenticated):
+    def has_permission(self, request, view):
+        if not super().has_permission(request, view):
+            return False
+        
+        return (not request.user.IsDoctor)
+    
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    
+    def enforce_csrf(self, request):
+        return
+
+
+class UserRegister(APIView):
+    permission_classes = (permissions.AllowAny, )
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
+    
+    def post(self, request):
+        clean_data = json.loads(request.body)
+        serializer = UserRegisterSerializer(data=clean_data)
+        print(clean_data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.create(clean_data)
+            print(user)
+            if user:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+class UserLogin(APIView):
+    permission_classes = (permissions.AllowAny, )
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    
+    def post(self, request):
+        data = request.data
+        serializer = UserLoginSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            try:
+                user = serializer.check_user(data)
+            except ValidationError:
+                return Response({'login':'Invalid user or password'}, status=status.HTTP_404_NOT_FOUND)
+            login(request, user)
+            return Response(serializer.data, status.HTTP_200_OK)
+            
+
+class UserLogout(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
+    
+    def post(self, request):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+
+class UserView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
+    
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+
+
+
+class ListPatients(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsDoctor]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    def get(self, request):
         patients = list(models.User.objects.filter(id__in=models.Patient.objects.all().values('user')).values())
         return JsonResponse(patients, safe=False, status=200)
-    elif request.method == "POST":
-        user_dict = json.loads(request.body)
-        new_user = create_user(user_dict)
-        
-        new_patient = models.Patient.objects.create(user=new_user)
-        new_patient.save()
-        
-        return JsonResponse(user_dict, status=200)
-        
-    response = HttpResponse('Invalid method')
-    response.status_code = 405
-    return response
 
 
-
-"""
-GET - list of all the doctors
-POST - create new doctor
-"""
-@csrf_exempt
-def list_doctors(request):
-    if request.method == "GET":
+class ListDoctors(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsPatient]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    
+    def get(self, request):
         doctors = list(models.User.objects.filter(id__in=models.Doctor.objects.all().values('user')).values())
         return JsonResponse(doctors, safe=False, status=200)
-    elif request.method == "POST":
-        # TODO add doctor's specializations
-        user_dict = json.loads(request.body)
-        new_user = create_user(user_dict)
-        
-        new_doctor = models.Doctor.objects.create(user=new_user)
-        new_doctor.save()
-        
-        return JsonResponse(user_dict, status=200)
-        
-    response = HttpResponse('Invalid method')
-    response.status_code = 405
-    return response
 
-"""
-GET - profile of user with user_id == pk
-PUT - updates user's data
-"""
+
+
 def user_details(request, pk):
     pass
     
@@ -72,11 +118,3 @@ POST - create new appointment
 def create_appointment(request):
     pass
 
-
-
-
-
-def create_user(user_dict):
-     new_user = models.User(**user_dict)
-     new_user.save()
-     return new_user
