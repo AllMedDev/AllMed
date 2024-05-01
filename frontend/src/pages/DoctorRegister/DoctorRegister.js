@@ -10,27 +10,28 @@ import './DoctorRegister.css';
 
 const RegistrationForm = () => {
     const [formData, setFormData] = useState({
-        firstName: '',
-        surname: '',
-        personalId: '',
-        telephone: '',
-        street: '',
-        city: '',
-        email: '',
-        password: '',
+        pin: '',
         specialization: '',
+        isDoctor: true,
+        first_name: '',
+        surname: '',
+        telephone: '',
+        email: '',
+        address_street: '',
+        address_city: '',
+        password: '',
     });
 
     const [errors, setErrors] = useState({});
 
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.firstName) newErrors.firstName = 'Vložte krstné meno';
+        if (!formData.first_name) newErrors.first_name = 'Vložte krstné meno';
         if (!formData.surname) newErrors.surname = 'Vložte priezvisko';
-        if (!formData.personalId) newErrors.personalId = 'Vložte rodné číslo';
+        if (!formData.pin) newErrors.pin = 'Vložte IČO';
         if (!formData.telephone) newErrors.telephone = 'Vložte telefón';
-        if (!formData.street) newErrors.street = 'Vložte ulicu a číslo';
-        if (!formData.city) newErrors.city = 'Vložte mesto';
+        if (!formData.address_street) newErrors.address_street = 'Vložte ulicu a číslo';
+        if (!formData.address_city) newErrors.address_city = 'Vložte mesto';
         if (!formData.email.includes('@')) newErrors.email = 'Vložte správnu adresu';
         if (formData.password.length < 6) newErrors.password = 'Vložte heslo dĺžky aspoň 6';
         if (!formData.specialization) newErrors.specialization = 'Vyberte špecializáciu';
@@ -57,9 +58,12 @@ const RegistrationForm = () => {
                 },
                 body: JSON.stringify(formData),
             })
-                .then((response) => response.json())
-                .then((data) => console.log('Server response:', data))
-                .catch((error) => console.error('Error sending data:', error));
+            .then ((response) => {
+                if (response.ok) {
+                    window.location.href = "http://localhost:3000/login"
+                }
+            })
+            .catch((error) => console.error('Error sending data:', error));
         }
     };
 
@@ -75,45 +79,45 @@ const RegistrationForm = () => {
                 <Form onSubmit={handleSubmit}>
                     <Row>
                         <Col sm={6}>
-                            <Form.Group controlId="firstName" className='inputFieldGroup'>
+                            <Form.Group controlId="first_name" className='inputFieldGroup'>
                                 <Form.Label>Krstné meno</Form.Label>
                                 <div className="input-container">
                                     <Form.Control
                                         type="text"
-                                        name="firstName"
-                                        value={formData.firstName}
+                                        name="first_name"
+                                        value={formData.first_name}
                                         onChange={handleInputChange}
-                                        className={errors.firstName ? 'input-error' : ''}
+                                        className={errors.first_name ? 'input-error' : ''}
                                     />
-                                    {errors.firstName && <span className="error-message">{errors.firstName}</span>}
+                                    {errors.first_name && <span className="error-message">{errors.first_name}</span>}
                                 </div>
                             </Form.Group>
 
-                            <Form.Group controlId="personalId" className='inputFieldGroup'>
-                                <Form.Label>Rodné číslo</Form.Label>
+                            <Form.Group controlId="pin" className='inputFieldGroup'>
+                                <Form.Label>IČO</Form.Label>
                                 <div className="input-container">
                                     <Form.Control
                                         type="text"
-                                        name="personalId"
-                                        value={formData.personalId}
+                                        name="pin"
+                                        value={formData.pin}
                                         onChange={handleInputChange}
-                                        className={errors.personalId ? 'input-error' : ''}
+                                        className={errors.pin ? 'input-error' : ''}
                                     />
-                                    {errors.personalId && <span class="error-message">{errors.personalId}</span>}
+                                    {errors.pin && <span class="error-message">{errors.pin}</span>}
                                 </div>
                             </Form.Group>
 
-                            <Form.Group controlId="street" className='inputFieldGroup'>
+                            <Form.Group controlId="address_street" className='inputFieldGroup'>
                                 <Form.Label>Ulica, číslo</Form.Label>
                                 <div className="input-container">
                                     <Form.Control
                                         type="text"
-                                        name="street"
-                                        value={formData.street}
+                                        name="address_street"
+                                        value={formData.address_street}
                                         onChange={handleInputChange}
-                                        className={errors.street ? 'input-error' : ''}
+                                        className={errors.address_street ? 'input-error' : ''}
                                     />
-                                    {errors.street && <span class="error-message">{errors.street}</span>}
+                                    {errors.address_street && <span class="error-message">{errors.address_street}</span>}
                                 </div>
                             </Form.Group>
 
@@ -182,17 +186,17 @@ const RegistrationForm = () => {
                                 </div>
                             </Form.Group>
 
-                            <Form.Group controlId="city" className='inputFieldGroup'>
+                            <Form.Group controlId="address_city" className='inputFieldGroup'>
                                 <Form.Label>Mesto</Form.Label>
                                 <div className="input-container">
                                     <Form.Control
                                         type="text"
-                                        name="city"
+                                        name="address_city"
                                         value={formData.city}
                                         onChange={handleInputChange}
-                                        className={errors.city ? 'input-error' : ''}
+                                        className={errors.address_city ? 'input-error' : ''}
                                     />
-                                    {errors.city && <span class="error-message">{errors.city}</span>}
+                                    {errors.address_city && <span class="error-message">{errors.address_city}</span>}
                                 </div>
                             </Form.Group>
 

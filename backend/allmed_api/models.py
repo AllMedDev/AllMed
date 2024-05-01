@@ -22,9 +22,9 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True, editable=False)
-    pin = models.IntegerField(unique=True)
+    pin = models.CharField(max_length=32, unique=True)
     
-    specialization = models.CharField(max_length=64)
+    specialization = models.CharField(max_length=64, blank=True)
     isDoctor = models.BooleanField()
     
     first_name = models.CharField(max_length=32)
