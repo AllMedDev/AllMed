@@ -29,8 +29,8 @@ const DoctorsPage = () => {
         //         }
         //         return response.json();
         //     })
-            .then((json) => {
-                setData(json);
+            .then((data) => {
+                setData(data.data);
                 setLoading(false);
             })
             .catch((err) => {

@@ -98,8 +98,7 @@ class ListDoctors(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def get(self, request):
-        print("a")
-        doctors = list(models.User.objects.filter(isDoctor = True).values())
+        doctors = list(models.User.objects.filter(isDoctor = True).values('first_name', 'surname', 'specialization', 'address_city'))
         print(doctors)
         return JsonResponse(doctors, safe=False, status=200)
 
