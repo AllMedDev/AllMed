@@ -17,14 +17,11 @@ const Homepage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            api.get('/user')
-            .then((response) => response.data)
-            .then(data =>data['user'])
-            .then(data => setFormData(data))
-          } catch (error) {
-            console.error('Error:', error);
-          }
+            var response = api.get('/user')
+            if (!response.ok) {
+                window.location.href = SITE_URL_LOGIN;
+            }
+            setFormData(response.data['user'])
         };
         fetchData();
     }, []);
