@@ -1,6 +1,6 @@
 from hmac import new
 from urllib import response
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, QueryDict
 from jsonschema import ValidationError
 from allmed_api import models
 import json
@@ -13,19 +13,19 @@ from rest_framework import permissions, status
 from rest_framework.permissions import IsAuthenticated
 
 
+
 class IsDoctor(IsAuthenticated):
     def has_permission(self, request, view):
-        if not super().has_permission(request, view):
-            return False
-    
+        # if not super().has_permission(request, view):
+        #     return False
         return request.user.isDoctor
 
 class IsPatient(IsAuthenticated):
     def has_permission(self, request, view):
-        if not super().has_permission(request, view):
-            return False
+        # if not super().has_permission(request, view):
+        #     return False
         
-        return (not request.user.IsDoctor)
+        return (not request.user.isDoctor)
     
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -49,13 +49,25 @@ class UserRegister(APIView):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
+    
+    def put(self, request):
+        new_user = json.loads(request.body)
+        curr_user = models.User.objects.get(pk=new_user['id'])
+        serializer = UserRegisterSerializer(curr_user, data=new_user)
+        if (serializer.is_valid(raise_exception=True)):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    
 
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny, )
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def post(self, request):
-        data = request.data
+        data = json.loads(request.body)
+        print(data)
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             try:
@@ -79,6 +91,7 @@ class UserView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
     
     def get(self, request):
+        
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
@@ -88,7 +101,7 @@ class ListPatients(APIView):
     permission_classes = [permissions.IsAuthenticated, IsDoctor]
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     def get(self, request):
-        patients = list(models.User.objects.filter(id__in=models.Patient.objects.all().values('user')).values())
+        patients = list(models.User.objects.filter(isDoctor=False).values())
         return JsonResponse(patients, safe=False, status=200)
 
 
@@ -97,7 +110,8 @@ class ListDoctors(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def get(self, request):
-        doctors = list(models.User.objects.filter(id__in=models.Doctor.objects.all().values('user')).values())
+        doctors = list(models.User.objects.filter(isDoctor = True).values('first_name', 'surname', 'specialization', 'address_city'))
+        print(doctors)
         return JsonResponse(doctors, safe=False, status=200)
 
 

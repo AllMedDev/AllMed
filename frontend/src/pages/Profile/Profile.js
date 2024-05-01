@@ -1,26 +1,55 @@
-import React, { useState } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form, Row, Col, Button, Navbar } from 'react-bootstrap';
 
-import { SPECIALIZATIONS } from '../../constants/DoctorSpecializations';
-import { API_URL_POST_DOCTOR } from '../../constants/ApiUrls';
+import NavBar from "../../components/NavBar/NavBar"
+
+import axios from 'axios';
+import { API_URL_BASE, API_URL_LOGOUT, API_URL_USER, API_URL_POST_PATIENT } from '../../constants/ApiUrls';
 import { SITE_URL_LOGIN } from '../../constants/SiteUrls';
 
-import './DoctorRegister.css';
+import './Profile.css';
 
 
-const RegistrationForm = () => {
+
+const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
+
+const Homepage = () => {
+
+    useEffect(() => {
+        const fetchData = async () => {
+            var response = api.get('/user')
+            if (!response.ok) {
+                window.location.href = SITE_URL_LOGIN;
+            }
+            setFormData(response.data['user'])
+        };
+        fetchData();
+    }, []);
+
     const [formData, setFormData] = useState({
+        id: '',
         pin: '',
-        specialization: '',
-        isDoctor: true,
         first_name: '',
         surname: '',
         telephone: '',
         email: '',
         address_street: '',
         address_city: '',
-        password: '',
     });
+
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+
+    const handleCheck = (e) => {
+        api.get('/user')
+        .then((response) => response.data)
+        .then(data =>data['user'])
+        .then(data => setFormData(data))
+    }
 
     const [errors, setErrors] = useState({});
 
@@ -28,20 +57,23 @@ const RegistrationForm = () => {
         const newErrors = {};
         if (!formData.first_name) newErrors.first_name = 'Vložte krstné meno';
         if (!formData.surname) newErrors.surname = 'Vložte priezvisko';
-        if (!formData.pin) newErrors.pin = 'Vložte IČO';
+        if (!formData.pin) newErrors.pin = 'Vložte rodné číslo';
         if (!formData.telephone) newErrors.telephone = 'Vložte telefón';
         if (!formData.address_street) newErrors.address_street = 'Vložte ulicu a číslo';
         if (!formData.address_city) newErrors.address_city = 'Vložte mesto';
-        if (!formData.email.includes('@')) newErrors.email = 'Vložte správnu adresu';
-        if (formData.password.length < 6) newErrors.password = 'Vložte heslo dĺžky aspoň 6';
-        if (!formData.specialization) newErrors.specialization = 'Vyberte špecializáciu';
 
         return newErrors;
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+    const handleLogout = (e) => {
+
+        api.post('/logout', '')
+            .then((response) => {
+                if (response.ok) {
+                    window.location.href = SITE_URL_LOGIN
+                }
+            })
+            .catch((error) => console.error('Error sending data:', error));
     };
 
     const handleSubmit = (e) => {
@@ -51,32 +83,35 @@ const RegistrationForm = () => {
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length === 0) {
-            fetch(API_URL_POST_DOCTOR, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
+            api.put(`/register`, formData)
+            // fetch(API_URL_POST_PATIENT, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(formData),
+            // })
             .then ((response) => {
                 if (response.ok) {
-                    window.location.href = SITE_URL_LOGIN
+                    //TODO
                 }
             })
             .catch((error) => console.error('Error sending data:', error));
         }
     };
 
-    const handleLoginButtonClick = () => {
+    const handleUserLogout = () => {
+        handleLogout()
         window.location.href = SITE_URL_LOGIN;
     };
 
     return (
-        <div className='DoctorRegComp'>
-            <h2 className='allmedheading'>AllMed</h2>
-            <div className="registration-form">
-                <h2>Registrácia lekára</h2>
-                <Form onSubmit={handleSubmit}>
+        <div>
+            <div>
+                <NavBar></NavBar>
+                <div className="UserData">
+                    <h2>Profil užívateľa {formData.first_name}</h2>
+                    <Form onSubmit={handleSubmit}>
                     <Row>
                         <Col sm={6}>
                             <Form.Group controlId="first_name" className='inputFieldGroup'>
@@ -94,7 +129,7 @@ const RegistrationForm = () => {
                             </Form.Group>
 
                             <Form.Group controlId="pin" className='inputFieldGroup'>
-                                <Form.Label>IČO</Form.Label>
+                                <Form.Label>Rodné číslo</Form.Label>
                                 <div className="input-container">
                                     <Form.Control
                                         type="text"
@@ -118,41 +153,6 @@ const RegistrationForm = () => {
                                         className={errors.address_street ? 'input-error' : ''}
                                     />
                                     {errors.address_street && <span class="error-message">{errors.address_street}</span>}
-                                </div>
-                            </Form.Group>
-
-                            <Form.Group controlId="email" className='inputFieldGroup'>
-                                <Form.Label>Email</Form.Label>
-                                <div className="input-container">
-                                    <Form.Control
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        className={errors.email ? 'input-error' : ''}
-                                    />
-                                    {errors.email && <span class="error-message">{errors.email}</span>}
-                                </div>
-                            </Form.Group>
-
-                            <Form.Group controlId="specialization">
-                                <Form.Label>Špecializácia</Form.Label>
-                                <div className="input-container">
-                                    <Form.Control
-                                        as="select"
-                                        name="specialization"
-                                        value={formData.specialization}
-                                        onChange={handleInputChange}
-                                        className={errors.specialization ? 'input-error' : ''}
-                                    >
-                                        <option value="">-- Vyberte špecializáciu --</option>
-                                        {SPECIALIZATIONS.map((spec) => (
-                                            <option key={spec} value={spec}>
-                                                {spec}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                    {errors.specialization && <span class="error-message">{errors.specialization}</span>}
                                 </div>
                             </Form.Group>
                         </Col>
@@ -192,44 +192,29 @@ const RegistrationForm = () => {
                                     <Form.Control
                                         type="text"
                                         name="address_city"
-                                        value={formData.city}
+                                        value={formData.address_city}
                                         onChange={handleInputChange}
                                         className={errors.address_city ? 'input-error' : ''}
                                     />
                                     {errors.address_city && <span class="error-message">{errors.address_city}</span>}
                                 </div>
                             </Form.Group>
-
-                            <Form.Group controlId="password" className='inputFieldGroup'>
-                                <Form.Label>Heslo</Form.Label>
-                                <div className="input-container">
-                                    <Form.Control
-                                        type="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        className={errors.password ? 'input-error' : ''}
-                                    />
-                                    {errors.password && <span class="error-message">{errors.password}</span>}
-                                </div>
-                            </Form.Group>
                         </Col>
                     </Row>
                 </Form>
+                </div>
             </div>
-            <div className="button-row">
-                <Button variant="primary" type="button" className="reg-button" onClick={handleSubmit}>
-                    Registrovať sa
+            <div className='Buttons'>
+                <Button variant="primary" type="button" className="patient-logout-button" onClick={handleUserLogout}>
+                    Odhlásiť
                 </Button>
-                <Button variant="primary" type="button" className="login-button" onClick={handleLoginButtonClick}>
-                    Prihlásiť sa
+
+                <Button variant="primary" type="button" className="patient-logout-button" onClick={handleSubmit}>
+                    Uložiť
                 </Button>
             </div>
-            <span className="separator">Ak ste registrovaný používateľ využite možnosť prihlásiť sa.</span>
         </div>
-
-
     );
 };
 
-export default RegistrationForm;
+export default Homepage;
