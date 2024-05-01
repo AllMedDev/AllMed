@@ -13,6 +13,7 @@ from rest_framework import permissions, status
 from rest_framework.permissions import IsAuthenticated
 
 
+
 class IsDoctor(IsAuthenticated):
     def has_permission(self, request, view):
         # if not super().has_permission(request, view):
@@ -47,6 +48,17 @@ class UserRegister(APIView):
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    def put(self, request):
+        new_user = json.loads(request.body)
+        curr_user = models.User.objects.get(pk=new_user['id'])
+        serializer = UserRegisterSerializer(curr_user, data=new_user)
+        if (serializer.is_valid(raise_exception=True)):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     
 
 class UserLogin(APIView):

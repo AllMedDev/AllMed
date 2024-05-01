@@ -8,6 +8,7 @@ import TopScrollButton from './components/TopScrollButton/TopScrollButton';
 import Login from "./pages/Login/Login";
 import RegisterDoctor from "./pages/DoctorRegister/DoctorRegister";
 import RegisterPatient from "./pages/PatientRegister/PatientRegister";
+import Profile from "./pages/Profile/Profile"
 
 import { SITE_URL_DOCTORS, 
     SITE_URL_PROFILE, 
@@ -19,7 +20,7 @@ import { SITE_URL_DOCTORS,
 // import PastAppointments from './pages/PastAppointments/PastAppointments';
 // import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
 import Doctors from "./pages/Doctors/Doctors";
-import Homepage from './pages/Homepage/Homepage';
+import Homepage from './pages/Profile/Profile';
 
 const App = () => {    
     return (
@@ -28,7 +29,7 @@ const App = () => {
                 <Routes>
                     <Route exact path="/" element={<Login />} />
                     <Route exact path="/login" element={<Login />} />
-                    <Route path="/uvod" element={<Homepage />} />
+                    <Route path="/profil" element={<Profile />} />
                     <Route path="/registracia-lekar" element={<RegisterDoctor /> } />
                     <Route path="/registracia-pacient" element={<RegisterPatient /> } />
                     <Route path="/lekari" element={<Doctors />} />

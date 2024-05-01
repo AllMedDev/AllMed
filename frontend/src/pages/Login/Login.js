@@ -3,7 +3,7 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 
 import axios from 'axios';
 import { API_URL_BASE, API_URL_LOGIN, API_URL_POST_DOCTOR } from '../../constants/ApiUrls';
-import { SITE_URL_HOME, SITE_URL_LOGIN, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
+import { SITE_URL_HOME, SITE_URL_LOGIN, SITE_URL_PROFILE, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
 
 import './Login.css';
 import App from '../../App';
@@ -44,7 +44,7 @@ const LoginPage = () => {
             api.post('/login', formData)
             .then((response) => {
                 if (response.statusText == "OK") {
-                    window.location.href = SITE_URL_HOME
+                    window.location.href = SITE_URL_PROFILE
                 }
             })
             .catch((error) => console.error('Error sending data:', error));

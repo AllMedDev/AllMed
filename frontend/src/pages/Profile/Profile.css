@@ -1,4 +1,4 @@
-.registration-form {
+.UserData {
     background: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -8,6 +8,10 @@
     margin: 5% auto;
     margin-top: 2%;
     padding-bottom: 3%;
+}
+
+.UserData h2 {
+    text-align: center;
 }
 
 .heading {
