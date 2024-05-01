@@ -1,0 +1,108 @@
+.registration-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    width: 60%;
+}
+
+.registration-form h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 40px;
+}
+
+.allmedheading {
+    text-align: center;
+    font-size: 2em;
+    font-family: 'Roboto', sans-serif;
+    color: rgb(97, 96, 96);
+    margin-bottom: 20px;
+    margin-top: 2%;
+    margin-bottom: -1%;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.inputFieldGroup {
+    padding-bottom: 6%;
+}
+
+.input-container {
+    height: 50px;
+    position: relative;
+}
+
+.input-error {
+    border-color: red;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.separator {
+    font-size: 1em;
+    color: #000;
+    margin: 10;
+}
+
+.reg-button,
+.login-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 60px;
+}
+
+.reg-button {
+    background-color: #007bff;
+    color: white;
+    margin: 0;
+}
+
+.login-button {
+    background-color: #4CAF50;
+    color: white;
+    margin-top: -4%;
+}
+
+.reg-button:hover {
+    background-color: #3f71db
+}
+
+.login-button:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .button-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+.DoctorRegComp {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
