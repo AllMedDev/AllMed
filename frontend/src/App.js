@@ -19,6 +19,7 @@ import { SITE_URL_DOCTORS,
 // import PastAppointments from './pages/PastAppointments/PastAppointments';
 // import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
 import Doctors from "./pages/Doctors/Doctors";
+import Homepage from './pages/Homepage/Homepage';
 
 const App = () => {    
     return (
@@ -27,6 +28,7 @@ const App = () => {
                 <Routes>
                     <Route exact path="/" element={<Login />} />
                     <Route exact path="/login" element={<Login />} />
+                    <Route path="/uvod" element={<Homepage />} />
                     <Route path="/registracia-lekar" element={<RegisterDoctor /> } />
                     <Route path="/registracia-pacient" element={<RegisterPatient /> } />
                     <Route path="/lekari" element={<Doctors />} />

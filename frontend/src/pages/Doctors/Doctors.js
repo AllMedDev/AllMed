@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { API_URL_GET_DOCTORS } from '../../constants/ApiUrls';
+import { API_URL_BASE, API_URL_GET_DOCTORS } from '../../constants/ApiUrls';
 
+import axios from 'axios';
 import NavBar from '../../components/NavBar/NavBar';
 import CardFiltering from '../../components/DoctorCards/CardFiltering';
 import './Doctors.css'
+
+
+
+const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
 
 
 const DoctorsPage = () => {
@@ -14,15 +19,16 @@ const DoctorsPage = () => {
     const [error, setError] = useState(null);
 
     const fetchJson = () => {
-        fetch(API_URL_GET_DOCTORS, 
-            { method: 'GET', headers: {'Content-Type': 'application/json'} 
-            }) 
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch');
-                }
-                return response.json();
-            })
+        api.get('/doctors')
+        // fetch(API_URL_GET_DOCTORS, 
+        //     { method: 'GET', headers: {'Content-Type': 'application/json'} 
+        //     }) 
+        //     .then((response) => {
+        //         if (!response.ok) {
+        //             throw new Error('Failed to fetch');
+        //         }
+        //         return response.json();
+        //     })
             .then((json) => {
                 setData(json);
                 setLoading(false);

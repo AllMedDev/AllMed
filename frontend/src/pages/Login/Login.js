@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 
-import { API_URL_LOGIN, API_URL_POST_DOCTOR } from '../../constants/ApiUrls';
-import { SITE_URL_LOGIN, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
+import axios from 'axios';
+import { API_URL_BASE, API_URL_LOGIN, API_URL_POST_DOCTOR } from '../../constants/ApiUrls';
+import { SITE_URL_HOME, SITE_URL_LOGIN, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
 
 import './Login.css';
+import App from '../../App';
+
+
+
+
+const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
+
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
@@ -33,16 +41,13 @@ const LoginPage = () => {
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length === 0) {
-            fetch(API_URL_LOGIN, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            api.post('/login', formData)
+            .then((response) => {
+                if (response.statusText == "OK") {
+                    window.location.href = SITE_URL_HOME
+                }
             })
-                .then((response) => response.json())
-                .then((data) => console.log('Server response:', data))
-                .catch((error) => console.error('Error sending data:', error));
+            .catch((error) => console.error('Error sending data:', error));
         }
     };
 
@@ -96,10 +101,10 @@ const LoginPage = () => {
                 </Form>
             </div>
             <span className="regs-separator">Ak ste nie ste registrovaný, využite možnosť registrácie</span>
-            <Button variant="primary" type="button" className="doctor-reg-button" onClick={handleDoctorRegistrationButtonClick}>
+            <Button variant="primary" type="button" className="doctor-reg-button" onClick={handlePatientRegistrationButtonClick}>
                 Registrovať sa ako pacient
             </Button>
-            <Button variant="primary" type="button" className="patient-reg-button" onClick={handlePatientRegistrationButtonClick}>
+            <Button variant="primary" type="button" className="patient-reg-button" onClick={handleDoctorRegistrationButtonClick}>
                 Registrovať sa ako lekár
             </Button>
         </div>

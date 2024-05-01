@@ -57,7 +57,7 @@ const RegistrationForm = () => {
             })
             .then ((response) => {
                 if (response.ok) {
-                    window.location.href = "http://localhost:3000/login"
+                    window.location.href = SITE_URL_LOGIN
                 }
             })
             .catch((error) => console.error('Error sending data:', error));
