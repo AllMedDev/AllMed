@@ -51,7 +51,7 @@ const DoctorsPage = () => {
     }
     
     return (
-        <div>
+        <div className='doctors-page'>
             <NavBar></NavBar>
             {Array.isArray(data) ? (
                 <CardFiltering items={data}> </CardFiltering>
