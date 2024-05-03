@@ -11,7 +11,7 @@ import './Profile.css';
 
 
 
-const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
+const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
 
 const Homepage = () => {
 
@@ -51,9 +51,9 @@ const Homepage = () => {
 
     const handleCheck = (e) => {
         api.get('/user')
-        .then((response) => response.data)
-        .then(data =>data['user'])
-        .then(data => setFormData(data))
+            .then((response) => response.data)
+            .then(data => data['user'])
+            .then(data => setFormData(data))
     }
 
     const [errors, setErrors] = useState({});
@@ -89,19 +89,19 @@ const Homepage = () => {
 
         if (Object.keys(validationErrors).length === 0) {
             api.put(`/register`, formData)
-            // fetch(API_URL_POST_PATIENT, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(formData),
-            // })
-            .then ((response) => {
-                if (response.ok) {
-                    //TODO
-                }
-            })
-            .catch((error) => console.error('Error sending data:', error));
+                // fetch(API_URL_POST_PATIENT, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify(formData),
+                // })
+                .then((response) => {
+                    if (response.ok) {
+                        //TODO
+                    }
+                })
+                .catch((error) => console.error('Error sending data:', error));
         }
     };
 
@@ -111,12 +111,11 @@ const Homepage = () => {
     };
 
     return (
-        <div>
-            <div>
-                <NavBar></NavBar>
-                <div className="UserData">
-                    <h2>Profil užívateľa {formData.first_name}</h2>
-                    <Form onSubmit={handleSubmit}>
+        <div className='profile-page'>
+            <NavBar></NavBar>
+            <div className="UserData">
+                <h2>Profil užívateľa {formData.first_name}</h2>
+                <Form onSubmit={handleSubmit}>
                     <Row>
                         <Col sm={6}>
                             <Form.Group controlId="first_name" className='inputFieldGroup'>
@@ -207,17 +206,20 @@ const Homepage = () => {
                         </Col>
                     </Row>
                 </Form>
-                </div>
             </div>
-            <div className='Buttons'>
-                <Button variant="primary" type="button" className="patient-logout-button" onClick={handleUserLogout}>
-                    Odhlásiť
-                </Button>
+            <Row>
+                <Col>
+                    <Button variant="primary" type="button" className="patient-logout-button" onClick={handleUserLogout}>
+                        Odhlásiť
+                    </Button>
+                </Col>
 
-                <Button variant="primary" type="button" className="patient-logout-button" onClick={handleSubmit}>
-                    Uložiť
-                </Button>
-            </div>
+                <Col>
+                    <Button variant="primary" type="button" className="patient-save-button" onClick={handleSubmit}>
+                        Uložiť
+                    </Button>
+                </Col>
+            </Row>
         </div>
     );
 };
