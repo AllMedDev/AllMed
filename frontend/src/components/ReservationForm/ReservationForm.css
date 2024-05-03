@@ -1,0 +1,51 @@
+.reservation-form-container {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 45%;
+    margin: 5% auto;
+    text-align: center;
+}
+
+.selected-time-message {
+    color: #333;
+    margin-top: 10px;
+}
+
+.single-line-label {
+    white-space: nowrap;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.time-slot-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    margin-bottom: 5%;
+    margin-left: 10%;
+}
+
+.time-slot {
+    cursor: pointer;
+    width: 20%;
+}
+
+.reserve-button {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.reserve-button:hover {
+    background-color: #45a049;
+}
