@@ -1,4 +1,5 @@
 from hmac import new
+from time import strftime
 from urllib import response
 from django.http import HttpResponse, JsonResponse, QueryDict
 from jsonschema import ValidationError
@@ -8,7 +9,7 @@ from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+from .serializers import AppointmentSerializer, UserRegisterSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
 from rest_framework.permissions import IsAuthenticated
 
@@ -16,14 +17,14 @@ from rest_framework.permissions import IsAuthenticated
 
 class IsDoctor(IsAuthenticated):
     def has_permission(self, request, view):
-        if not super().has_permission(request, view):
-            return False
+        # if not super().has_permission(request, view):
+        #     return False
         return request.user.isDoctor
 
 class IsPatient(IsAuthenticated):
     def has_permission(self, request, view):
-        if not super().has_permission(request, view):
-            return False
+        # if not super().has_permission(request, view):
+        #     return False
         return (not request.user.isDoctor)
     
 
@@ -112,22 +113,51 @@ class ListDoctors(APIView):
         doctors = list(models.User.objects.filter(isDoctor = True).values('id', 'first_name', 'surname', 'specialization', 'address_city'))
         print(doctors)
         return JsonResponse(doctors, safe=False, status=200)
-
-
-
-def user_details(request, pk):
-    pass
     
+    def post(self, request):
+        doctorId = json.loads(request.body)
+        candidate = list(models.User.objects.filter(isDoctor = True).filter(id = doctorId).values("first_name", "surname"))
+        print(candidate)
+        return JsonResponse(candidate, safe=False, status=200)
+
+class ListAppointments(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
-"""
-GET - list of appintments where <pk> is either patient or doctor
-"""
-def assigned_appointments(request, pk):
-    pass
+    def post(self, request):
+        target_id = json.loads(request.body)['doctorId']
+        print(request.body)
+        patient_appointments = list(models.Appointment.objects.filter(patient_id = target_id).values("patient_id", "doctor_id", "date", "time"))
+        doctor_appointments = list(models.Appointment.objects.filter(doctor_id = target_id).values("patient_id", "doctor_id", "date", "time"))
+        
+        output = {}
+        for entry in patient_appointments:
+            print(entry["date"])
+            if (output.get(entry["date"].strftime("%Y-%m-%d"), False) == False):
+                output[entry["date"].strftime("%Y-%m-%d")] = []
+                
+            output[entry["date"].strftime("%Y-%m-%d")].append(entry["time"].strftime("%H:%M"))
+            
+        for entry in doctor_appointments:
+            print(entry["date"])
+            if (output.get(entry["date"].strftime("%Y-%m-%d"), False) == False):
+                output[entry["date"].strftime("%Y-%m-%d")] = []
+                
+            output[entry["date"].strftime("%Y-%m-%d")].append(entry["time"].strftime("%H:%M"))
 
-"""
-POST - create new appointment
-"""
-def create_appointment(request):
-    pass
 
+        print(output)    
+        return JsonResponse(output, safe=False, status=200)
+    
+class AppointmentCreate(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    
+    def post(self, request):
+        clean_data = json.loads(request.body)
+        serializer = AppointmentSerializer(data=clean_data)
+        if serializer.is_valid(raise_exception=True):
+            appointment = serializer.create(clean_data)
+            if appointment:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

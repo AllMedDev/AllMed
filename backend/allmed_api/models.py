@@ -44,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return f"{self.id} - {self.first_name} {self.surname}"
-
     
 class Appointment(models.Model):
     patient_id = models.PositiveIntegerField()

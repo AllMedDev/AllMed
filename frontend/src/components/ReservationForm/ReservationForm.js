@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Badge } from 'react-bootstrap';
+
+import { API_URL_BASE } from '../../constants/ApiUrls';
+import { SITE_URL_LOGIN, SITE_URL_PROFILE, SITE_URL_REGISTRATION_DOCTOR } from '../../constants/SiteUrls';
+
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './ReservationForm.css';
+import axios from 'axios';
 
 
 const skDateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -15,15 +20,18 @@ const reservedTimesData = {
     '2024-05-11': ['10:00', '10:15', '15:00'],
 };
 
+const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
+const doctorId = 0;
 
 function generateAvailableTimeSlots(reservedTimes) {
     const start = new Date(0, 0, 0, 9, 0); // Start at 09:00
     const end = new Date(0, 0, 0, 15, 0); // End at 15:00
     const slots = [];
 
+
     while (start < end) {
         const timeString = start.toTimeString().split(' ')[0].slice(0, 5);
-        if (!reservedTimes.includes(timeString)) {
+        if (typeof reservedTimes == 'undefined' ||  !reservedTimes.includes(timeString)) {
             slots.push(timeString);
         }
         start.setMinutes(start.getMinutes() + 15); // Increment by 15 minutes
@@ -32,7 +40,8 @@ function generateAvailableTimeSlots(reservedTimes) {
     return slots;
 }
 
-const ReservationForm = () => {
+const ReservationForm = (doctorId) => {
+    doctorId = doctorId;
     const [selectedDate, setSelectedDate] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
     const [reservedTimes, setReservedTimes] = useState([]);
@@ -43,9 +52,18 @@ const ReservationForm = () => {
             var d = new Date(selectedDate);
             var newd = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
             const formattedDate = newd.toISOString().split("T")[0];
-            const reservedTimesForDate = reservedTimesData[formattedDate] || [];
-            setReservedTimes(reservedTimesForDate);
-            setAvailableTimeSlots(generateAvailableTimeSlots(reservedTimesForDate));
+
+            const fetchData = async () => {
+                try {
+                    var response = await api.post('/appointments', doctorId);
+                    setReservedTimes(response.data[formattedDate]);
+                    setAvailableTimeSlots(generateAvailableTimeSlots(response.data[formattedDate]));
+                }
+                catch (e) {
+                    window.location.href = SITE_URL_PROFILE;
+                }
+            };
+            fetchData();
         }
     }, [selectedDate]);
 
@@ -55,12 +73,12 @@ const ReservationForm = () => {
     };
 
     const handleTimeClick = (time) => {
-        if (!reservedTimes.includes(time)) {
+        if (typeof reservedTimes == 'undefined' || !reservedTimes.includes(time)) {
             setSelectedTime(time);
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!selectedTime || !selectedDate) {
@@ -71,11 +89,30 @@ const ReservationForm = () => {
         const localDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
         const formattedDate = localDate.toISOString().split("T")[0];
 
-        // TBD - change json data to api call if needed, also need to be
         const reservationData = {
             date: formattedDate,
             time: selectedTime,
         };
+
+        var response = await api.get('/user');
+        console.log(response);
+        var userId = response.data['user']['id'];
+
+        const appointmentData = {
+            patient_id:userId,
+            doctor_id:doctorId['doctorId'],
+            date:formattedDate,
+            time:selectedTime,
+        };
+
+        await api.post('/new-appointment', appointmentData)
+        .then(response => {
+            console.log(response.StatusText);
+            if (response.statusText == "Created")
+                window.location.href = SITE_URL_PROFILE;
+        });
+
+
     };
 
     return (

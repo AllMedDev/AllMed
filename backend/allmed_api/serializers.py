@@ -44,3 +44,16 @@ class UserSerializer(serializers.ModelSerializer):
          fields = ['id', 'password', 'isDoctor', 'email', 'pin', 'first_name', 'surname', 
                   'telephone', 'email', 'address_street', 'address_city']
          
+class AppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Appointment
+        fields = ['patient_id', 'doctor_id', "date", "time"]
+         
+    def create(self, clean_data):
+        print(clean_data)
+        appointment_obj = models.Appointment.objects.create(patient_id = clean_data['patient_id'],
+                                                                       doctor_id = clean_data['doctor_id'],
+                                                                       date = clean_data['date'],
+                                                                       time = clean_data['time'])
+        appointment_obj.save()
+        return appointment_obj
