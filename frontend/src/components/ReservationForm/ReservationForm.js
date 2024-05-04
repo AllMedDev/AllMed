@@ -55,7 +55,11 @@ const ReservationForm = (doctorId) => {
 
             const fetchData = async () => {
                 try {
-                    var response = await api.post('/appointments', doctorId);
+                    const data = {
+                        doctorId:doctorId['doctorId'],
+                        justFuture:true,
+                    }
+                    var response = await api.post('/appointments', data);
                     setReservedTimes(response.data[formattedDate]);
                     setAvailableTimeSlots(generateAvailableTimeSlots(response.data[formattedDate]));
                 }

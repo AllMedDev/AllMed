@@ -85,9 +85,9 @@ const ReservationList = ({ data, mainHeadline }) => {
             <tr key={reservation.id}>
               <td>{reservation.date}</td>
               <td>{reservation.time}</td>
-              <td>{reservation.doctor}</td>
+              <td>{reservation.doctor_firstname} {reservation.doctor_surname}</td>
               <td>{reservation.specialization}</td>
-              <td>{reservation.address}, {reservation.city}</td>
+              <td>{reservation.address_street}, {reservation.address_city}</td>
             </tr>
           ))}
         </tbody>

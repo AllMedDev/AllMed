@@ -1,6 +1,8 @@
+import datetime
 from hmac import new
 from time import strftime
 from urllib import response
+from django.conf import UserSettingsHolder
 from django.http import HttpResponse, JsonResponse, QueryDict
 from jsonschema import ValidationError
 from allmed_api import models
@@ -116,7 +118,7 @@ class ListDoctors(APIView):
     
     def post(self, request):
         doctorId = json.loads(request.body)
-        candidate = list(models.User.objects.filter(isDoctor = True).filter(id = doctorId).values("first_name", "surname"))
+        candidate = GetDoctorById(doctorId)
         print(candidate)
         return JsonResponse(candidate, safe=False, status=200)
 
@@ -126,19 +128,13 @@ class ListAppointments(APIView):
     
     def post(self, request):
         target_id = json.loads(request.body)['doctorId']
+        just_future = json.loads(request.body)['justFuture']
         print(request.body)
-        patient_appointments = list(models.Appointment.objects.filter(patient_id = target_id).values("patient_id", "doctor_id", "date", "time"))
-        doctor_appointments = list(models.Appointment.objects.filter(doctor_id = target_id).values("patient_id", "doctor_id", "date", "time"))
+        
+        appointments = GetAppointmentsById  (target_id, just_future)     
         
         output = {}
-        for entry in patient_appointments:
-            print(entry["date"])
-            if (output.get(entry["date"].strftime("%Y-%m-%d"), False) == False):
-                output[entry["date"].strftime("%Y-%m-%d")] = []
-                
-            output[entry["date"].strftime("%Y-%m-%d")].append(entry["time"].strftime("%H:%M"))
-            
-        for entry in doctor_appointments:
+        for entry in appointments:
             print(entry["date"])
             if (output.get(entry["date"].strftime("%Y-%m-%d"), False) == False):
                 output[entry["date"].strftime("%Y-%m-%d")] = []
@@ -161,3 +157,54 @@ class AppointmentCreate(APIView):
             if appointment:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class AppointmentsDetailed(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    
+    def post(self, request):
+        print(json.loads(request.body))
+        targetId = json.loads(request.body)['id']
+        justFuture = json.loads(request.body)['justFuture']
+        
+        appointments = GetAppointmentsById(targetId, justFuture)
+        
+        output = []
+        
+        for entry in appointments:
+            doctor = GetDoctorById(entry['doctor_id'])[0]
+            output.append({
+                "doctor_firstname":doctor['first_name'],
+                "doctor_surname":doctor['surname'],
+                "doctor_surname":doctor['surname'],
+                "specialization":doctor['specialization'],
+                "address_street":doctor['address_street'],
+                "address_city":doctor['address_city'],
+                "date":entry['date'],
+                "time":entry['time'],
+            })
+            
+        print(output)
+        
+        return Response(output, status=200)
+        
+        
+    
+
+def GetDoctorById(doctorId):
+    return list(models.User.objects.filter(isDoctor = True).filter(id = doctorId).values("first_name", "surname", "specialization", "address_street", "address_city"))
+
+def GetAppointmentsById(userId, justFuture):
+    if (justFuture):
+        patient_appointments = list(models.Appointment.objects.filter(date__gte=datetime.datetime.now().date()).filter(patient_id = userId).values("patient_id", "doctor_id", "date", "time"))
+        doctor_appointments = list(models.Appointment.objects.filter(date__gte=datetime.datetime.now().date()).filter(doctor_id = userId).values("patient_id", "doctor_id", "date", "time"))
+    else:
+        patient_appointments = list(models.Appointment.objects.filter(date__lt=datetime.datetime.now().date()).filter(patient_id = userId).values("patient_id", "doctor_id", "date", "time"))
+        doctor_appointments = list(models.Appointment.objects.filter(date__lt=datetime.datetime.now().date()).filter(doctor_id = userId).values("patient_id", "doctor_id", "date", "time"))
+    
+    patient_appointments.extend(doctor_appointments)
+    
+    return patient_appointments
+
+        
