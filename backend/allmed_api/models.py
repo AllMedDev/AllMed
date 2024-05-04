@@ -49,7 +49,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Appointment(models.Model):
     patient_id = models.PositiveIntegerField()
     doctor_id = models.PositiveIntegerField()
-    date_time = models.DateTimeField()
+    date = models.DateField()
+    time = models.TimeField()
+    
     
     def __str__(self):
-        return f"{self.patient_id} - {self.doctor_id} : {self.date_time}"
+        return f"{self.patient_id} - {self.doctor_id} : {self.date} {self.time}"

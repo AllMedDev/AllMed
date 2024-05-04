@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL_BASE, API_URL_GET_DOCTORS } from '../../constants/ApiUrls';
+import { API_URL_BASE } from '../../constants/ApiUrls';
 
 import axios from 'axios';
 
@@ -13,6 +13,8 @@ import NavBar from '../../components/NavBar/NavBar';
 const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
 
 const NewReservation = () => {
+
+    
     
     
     return (

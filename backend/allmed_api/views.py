@@ -16,15 +16,14 @@ from rest_framework.permissions import IsAuthenticated
 
 class IsDoctor(IsAuthenticated):
     def has_permission(self, request, view):
-        # if not super().has_permission(request, view):
-        #     return False
+        if not super().has_permission(request, view):
+            return False
         return request.user.isDoctor
 
 class IsPatient(IsAuthenticated):
     def has_permission(self, request, view):
-        # if not super().has_permission(request, view):
-        #     return False
-        
+        if not super().has_permission(request, view):
+            return False
         return (not request.user.isDoctor)
     
 
@@ -110,7 +109,7 @@ class ListDoctors(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def get(self, request):
-        doctors = list(models.User.objects.filter(isDoctor = True).values('first_name', 'surname', 'specialization', 'address_city'))
+        doctors = list(models.User.objects.filter(isDoctor = True).values('id', 'first_name', 'surname', 'specialization', 'address_city'))
         print(doctors)
         return JsonResponse(doctors, safe=False, status=200)
 

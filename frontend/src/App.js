@@ -15,6 +15,12 @@ import ReservationFormPage from './pages/NewReservation/NewReservation';
 import PastAppointments from './pages/PastAppointments/PastAppointments';
 import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
 
+// TBD
+// import PastAppointments from './pages/PastAppointments/PastAppointments';
+// import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
+import Doctors from "./pages/Doctors/Doctors";
+import Homepage from './pages/Profile/Profile';
+import NewReservation from './pages/NewReservation/NewReservation';
 
 const App = () => {    
     return (
@@ -30,6 +36,9 @@ const App = () => {
                     <Route path="/nova-rezervacia" element={<ReservationFormPage />} />
                     <Route path="/planovane-rezervacie"element={<FutureAppointments />} />
                     <Route path="/historia-rezervacii" element={<PastAppointments />} />
+                    {/* TBD */}
+                    {/* <Route path="/planovane-rezervacie"element={<PastAppointments />} />
+                    <Route path="/historia-rezervacii" element={<FutureAppointments />} /> */}
                 </Routes>
                 <TopScrollButton />
             </Router>
