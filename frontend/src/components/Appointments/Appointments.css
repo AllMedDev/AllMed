@@ -1,0 +1,31 @@
+.reservation-list-container {
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the text */
+    width: 70%;
+    margin-top: 2%;
+    padding-bottom: 2%;
+    margin-left:15%; /* Center the container horizontally */
+  }
+
+  .headline {
+    margin-top: 1%;
+    margin-bottom: 2%;
+  }  
+  .sort-buttons-row {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    margin-bottom: 30px;
+  }
+  .sort-button {
+    width: 300px; /* Set the desired width *//* Add some space between the buttons */
+    padding: 20px; /* Ensure padding is adequate */
+  }
+  
+  .table {
+    margin: auto; /* Center the table horizontally */
+    width: 90%; /* Set the width of the table */
+  }
+  
