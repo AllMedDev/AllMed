@@ -1,0 +1,22 @@
+Interná medicína
+Kardiológia
+Neurológia
+Pediatria
+Ortopédia
+Gynekológia
+Dermatológia
+Anestéziológia
+Rádiológia
+Patológia
+Onkológia
+Urológia
+Endokrinológia
+Reumatológia
+Gastroenterológia
+Nefrológia
+Hematológia
+Pneumológia
+Otorinolaryngológia
+Psychiatria
+Všeobecná chirurgia
+Neurochirurgia
