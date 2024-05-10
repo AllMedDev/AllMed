@@ -1,0 +1,114 @@
+.patient-listing {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  width: 80%;
+  justify-content: space-between;
+  margin-top: 2%;
+}
+
+.patient-listing .form-control {
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.patient-listing .form-control:focus {
+  border-color: #007bff;
+}
+
+.patient-listing .sorting-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.patient-listing table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.patient-listing table th {
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.patient-listing table th:hover {
+  background-color: #e0e0e0;
+}
+
+.patient-listing table td {
+  padding: 10px;
+  text-align: center;
+}
+
+.patient-listing table tbody tr {
+  background-color: white;
+  transition: background-color 0.3s;
+}
+
+.patient-listing table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.patient-listing table th span {
+  font-size: 0.8em;
+  margin-left: 5px;
+  color: #666;
+}
+
+.patient-listing table th:hover span {
+  color: #333;
+}
+
+.patient-search-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  max-width: 40%;
+  height: 10%;
+  margin: 0 auto;
+  margin-bottom: 2%;
+}
+
+.patients-sorting-buttons {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.patients-sort-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  width: 350px;
+}
+
+.patients-sort-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.patients-sort-button:active {
+  background-color: #004085;
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
