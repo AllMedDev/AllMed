@@ -1,0 +1,54 @@
+.reservation-list-container {
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the text */
+    width: 70%;
+    margin-top: 2%;
+    padding-bottom: 2%;
+    margin-left:15%; /* Center the container horizontally */
+  }
+
+  .headline {
+    margin-top: 1%;
+    margin-bottom: 2%;
+  }  
+  .sort-buttons-row {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    margin-bottom: 30px;
+  }
+  .sort-button {
+    display: inline-block;
+    padding: 10px 20px; /* Comfortable padding */
+    font-size: 16px; /* Text size for readability */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #007bff; /* Bootstrap's primary blue */
+    color: white; /* White text for contrast */
+    border: none; /* No default border */
+
+    text-decoration: none; /* No underline for links */
+    transition: all 0.3s; /* Smooth transition for hover effects */
+    width: 300px;
+    margin-bottom: 1%;
+  }
+  
+  .sort-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  }
+  
+  .sort-button:active {
+    background-color: #004085; /* Even darker on click */
+    transform: translateY(1px); /* Slight press effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Lighter shadow on click */
+  }
+  
+  
+  .table {
+    margin: auto; /* Center the table horizontally */
+    width: 90%; /* Set the width of the table */
+  }
+  
