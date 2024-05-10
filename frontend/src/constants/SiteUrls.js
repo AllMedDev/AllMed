@@ -6,6 +6,7 @@ export const SITE_URL_REGISTRATION_DOCTOR = 'http://127.0.0.1:3000/registracia-l
 export const SITE_URL_REGISTRATION_PATIENT = 'http://127.0.0.1:3000/registracia-pacient';
 
 export const SITE_URL_DOCTORS = 'http://127.0.0.1:3000/lekari';
+export const SITE_URL_PATIENTS = 'http://127.0.0.1:3000/pacienti';
 export const SITE_URL_PROFILE = 'http://127.0.0.1:3000/profil';
 
 export const SITE_URL_APPOINTMENT_NEW = 'http://127.0.0.1:3000/nova-rezervacia';
