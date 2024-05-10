@@ -11,16 +11,11 @@ import RegisterDoctorPage from "./pages/DoctorRegister/DoctorRegister";
 import RegisterPatientPage from "./pages/PatientRegister/PatientRegister";
 import ProfilePage from "./pages/Profile/Profile"
 import DoctorsPage from "./pages/Doctors/Doctors";
+import PatientsPage from "./pages/Patients/patients";
 import ReservationFormPage from './pages/NewReservation/NewReservation';
 import PastAppointments from './pages/PastAppointments/PastAppointments';
 import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
 
-// TBD
-// import PastAppointments from './pages/PastAppointments/PastAppointments';
-// import FutureAppointments from './pages/FutureAppointments/FutureAppointments';
-import Doctors from "./pages/Doctors/Doctors";
-import Homepage from './pages/Profile/Profile';
-import NewReservation from './pages/NewReservation/NewReservation';
 
 const App = () => {    
     return (
@@ -33,12 +28,12 @@ const App = () => {
                     <Route path="/registracia-lekar" element={<RegisterDoctorPage /> } />
                     <Route path="/registracia-pacient" element={<RegisterPatientPage /> } />
                     <Route path="/lekari" element={<DoctorsPage />} />
+                    <Route path="/pacienti" element={<PatientsPage />} />
                     <Route path="/nova-rezervacia" element={<ReservationFormPage />} />
                     <Route path="/planovane-rezervacie"element={<FutureAppointments />} />
                     <Route path="/historia-rezervacii" element={<PastAppointments />} />
-                    {/* TBD */}
-                    {/* <Route path="/planovane-rezervacie"element={<PastAppointments />} />
-                    <Route path="/historia-rezervacii" element={<FutureAppointments />} /> */}
+                    <Route path="/planovane-rezervacie"element={<PastAppointments />} />
+                    <Route path="/historia-rezervacii" element={<FutureAppointments />} />
                 </Routes>
                 <TopScrollButton />
             </Router>
