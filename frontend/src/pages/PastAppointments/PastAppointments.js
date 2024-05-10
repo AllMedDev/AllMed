@@ -3,11 +3,19 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PastAppointments.css';
 
-import DisplayAppointments from '../../components/Appointments/Appointments';
+import DisplayDoctorsAppointments from '../../components/Appointments/DoctorsAppointments';
+import DisplayPatientsAppointments from '../../components/Appointments/PatientsAppointments';
 import NavBar from '../../components/NavBar/NavBar';
 
+import IsUserDoctor from '../../components/IsUserDoctor/IsUserDoctor';
 
-const apiEndpoint = "INSERT_API_HERE_PLS";
+import { API_URL_BASE } from '../../constants/ApiUrls';
+import { SITE_URL_PROFILE } from '../../constants/SiteUrls';
+
+import axios from 'axios';
+
+const apiEndpoint = "/detailed-appointments";
+const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
 
 const sampleReservations = [
     {
@@ -137,21 +145,33 @@ const sampleReservations = [
 
 
 const PastAppointmentsPage = () => {
-    const [reservations, setReservations] = useState(sampleReservations);
+    const isUserDoctor = IsUserDoctor();
 
-    useEffect(() => {
+    const [reservations, setReservations] = useState(sampleReservations);
+    // const [reservations, setReservations] = useState(null);
+
+    useEffect( () => {
         const fetchData = async () => {
-            // TBD: Fetch data from API if available
-            // setReservations(data);
+            try {
+                var response = await api.get('/user');
+                const data = {
+                    id:response.data['user']['id'],
+                    justFuture:true
+                };
+                var response = await api.post(apiEndpoint, data);
+                setReservations(response.data);
+            } catch (e) {
+                window.location.href = SITE_URL_PROFILE;
+            }
         };
 
         fetchData();
-    }, [apiEndpoint]);
-
+    }, []);
     return (
         <div className='past-appointments-page'>
             <NavBar></NavBar>
-            <DisplayAppointments data={reservations} mainHeadline={"História rezervácií"} />
+            {isUserDoctor == true ? <DisplayDoctorsAppointments data={reservations} mainHeadline={"História rezervácií"} /> : null}
+            {isUserDoctor == false ? <DisplayPatientsAppointments data={reservations} mainHeadline={"História rezervácií"} /> : null}
         </div>
     )
 }
