@@ -20,15 +20,6 @@ const DoctorsPage = () => {
 
     const fetchJson = () => {
         api.get('/doctors')
-        // fetch(API_URL_GET_DOCTORS, 
-        //     { method: 'GET', headers: {'Content-Type': 'application/json'} 
-        //     }) 
-        //     .then((response) => {
-        //         if (!response.ok) {
-        //             throw new Error('Failed to fetch');
-        //         }
-        //         return response.json();
-        //     })
             .then((data) => {
                 setData(data.data);
                 setLoading(false);
