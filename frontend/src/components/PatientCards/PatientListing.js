@@ -3,17 +3,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Table, Button } from 'react-bootstrap';
 import './PatientListing.css';
 
-const formatDate = (dateString) => {
-    const date = new Date(dateString); // Convert the string to a Date object
-    const formatter = new Intl.DateTimeFormat('sk-SK', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-    return formatter.format(date);
-};
+// const formatDate = (dateString) => {
+//     const date = new Date(dateString); // Convert the string to a Date object
+//     const formatter = new Intl.DateTimeFormat('sk-SK', {
+//         day: '2-digit',
+//         month: '2-digit',
+//         year: 'numeric',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//     });
+//     return formatter.format(date);
+// };
 
 const PatientListingWithFilter = ({ items }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -86,14 +86,14 @@ const PatientListingWithFilter = ({ items }) => {
                 <tbody>
                     {filteredPatients.map((patient, index) => (
                         <tr key={index}>
-                            <td>{patient.pin}</td>
-                            <td>{`${patient.first_name} ${patient.surname}`}</td>
-                            <td>{patient.telephone}</td>
-                            <td>{patient.email}</td>
+                            <td>{patient.patient_pin}</td>
+                            <td>{`${patient.patient_first_name} ${patient.patient_surname}`}</td>
+                            <td>{patient.patient_telephone}</td>
+                            <td>{patient.patient_email}</td>
                             <td>
-                                {patient.address_street}, {patient.address_city}
+                                {patient.patient_address_street}, {patient.patient_address_city}
                             </td>
-                            <td>{formatDate(patient.last_appointment_date)}</td>
+                            <td>{patient.last_appointment_date}</td>
                         </tr>
                     ))}
                 </tbody>

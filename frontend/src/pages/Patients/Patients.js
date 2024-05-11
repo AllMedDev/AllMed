@@ -75,25 +75,24 @@ const sampleData = [
 
 const PatientsPage = () => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const fetchJson = () => {
-    setData(sampleData); // Using sample data
-    setLoading(false);
+  const fetchJson = async () => {
+    var doctor = await api.get('/user');
+    console.log(doctor.data);
+
+    const data = {
+      doctorId:doctor.data['user']['id'],
+      justFuture:true,
+    };
+
+    var response = await api.post('/doctor-detailed-patients', data);
+    console.log(response.data);
+    setData(response.data);
   };
 
   useEffect(() => {
     fetchJson();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="patients-page">

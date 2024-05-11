@@ -17,5 +17,6 @@ urlpatterns = [
     path('user', views.UserView.as_view(), name='user'),
     path('appointments', views.ListAppointments.as_view(), name='appointments' ),
     path('new-appointment', views.AppointmentCreate.as_view(), name='new-appointment'),
-    path('detailed-appointments', views.AppointmentsDetailed.as_view(), name='detailed-appointments')
+    path('detailed-appointments', views.AppointmentsDetailed.as_view(), name='detailed-appointments'),
+    path('doctor-detailed-patients', views.DoctorPatientsDetailed.as_view(), name='doctor-detailed-apointments')
 ]

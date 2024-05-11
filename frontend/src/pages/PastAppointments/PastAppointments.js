@@ -148,7 +148,6 @@ const PastAppointmentsPage = () => {
     const isUserDoctor = IsUserDoctor();
 
     const [reservations, setReservations] = useState(sampleReservations);
-    // const [reservations, setReservations] = useState(null);
 
     useEffect( () => {
         const fetchData = async () => {
@@ -156,7 +155,7 @@ const PastAppointmentsPage = () => {
                 var response = await api.get('/user');
                 const data = {
                     id:response.data['user']['id'],
-                    justFuture:true
+                    justFuture:false
                 };
                 var response = await api.post(apiEndpoint, data);
                 setReservations(response.data);

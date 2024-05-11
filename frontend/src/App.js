@@ -11,7 +11,7 @@ import RegisterDoctorPage from "./pages/DoctorRegister/DoctorRegister";
 import RegisterPatientPage from "./pages/PatientRegister/PatientRegister";
 import ProfilePage from "./pages/Profile/Profile"
 import DoctorsPage from "./pages/Doctors/Doctors";
-import PatientsPage from "./pages/Patients/patients";
+import PatientsPage from "./pages/Patients/Patients";
 import ReservationFormPage from './pages/NewReservation/NewReservation';
 import PastAppointments from './pages/PastAppointments/PastAppointments';
 import FutureAppointments from './pages/FutureAppointments/FutureAppointments';

@@ -71,6 +71,7 @@ const ReservationList = ({ data, mainHeadline }) => {
                         <th>Čas</th>
                         <th>Pacient</th>
                         <th>Adresa</th>
+                        <th>Telefón</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,9 +79,9 @@ const ReservationList = ({ data, mainHeadline }) => {
                         <tr key={reservation.id}>
                             <td>{reservation.date}</td>
                             <td>{reservation.time}</td>
-                            <td>{reservation.patient_firstname} {reservation.patient_surname}</td>
-                            {/* TBD ADRESA PACIENTA INSERT FIELD INSTEAD OF RESERVATION */}
-                            <td>{reservation.address_street}, {reservation.address_city}</td>
+                            <td>{reservation.patient_first_name} {reservation.patient_surname}</td>
+                            <td>{reservation.patient_address_street}, {reservation.patient_address_city}</td>
+                            <td>{reservation.patient_telephone}</td>
                         </tr>
                     ))}
                 </tbody>

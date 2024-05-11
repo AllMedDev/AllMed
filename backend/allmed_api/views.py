@@ -1,5 +1,6 @@
 import datetime
 from hmac import new
+from pydoc import isdata
 from time import strftime
 from urllib import response
 from django.conf import UserSettingsHolder
@@ -174,13 +175,20 @@ class AppointmentsDetailed(APIView):
         
         for entry in appointments:
             doctor = GetDoctorById(entry['doctor_id'])[0]
+            patient = GetPatientById(entry['patient_id'])[0]
+            
             output.append({
                 "doctor_firstname":doctor['first_name'],
                 "doctor_surname":doctor['surname'],
                 "doctor_surname":doctor['surname'],
                 "specialization":doctor['specialization'],
-                "address_street":doctor['address_street'],
                 "address_city":doctor['address_city'],
+                "address_street":doctor['address_street'],
+                
+                "patient_first_name":patient['first_name'],
+                "patient_surname":patient['surname'],
+                "patient_address_street":patient['address_street'],
+                "patient_telephone":patient['telephone'],
                 "date":entry['date'],
                 "time":entry['time'],
             })
@@ -188,12 +196,59 @@ class AppointmentsDetailed(APIView):
         print(output)
         
         return Response(output, status=200)
-        
-        
     
+class DoctorPatientsDetailed(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsDoctor, ]
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
+    
+    def post(self, request):
+        loadedBody = json.loads(request.body)
+        print(loadedBody)
+        targetId = loadedBody['doctorId']
+        
+        appointments = GetAppointmentsById(targetId, loadedBody['justFuture'])
+        print(appointments)
+        output = []
+        
+        for entry in appointments:
+            patient = GetPatientById(entry['patient_id'])[0]
+            if (PatientInOutput(patient['pin'], output)):
+                continue
+            lastAppointment = GetLastAppointment(entry['patient_id'], targetId)
+            if (lastAppointment['date'] == entry['date']):
+                lastAppointment['date'] = "Prvá rezervácia"
+            
+            output.append({
+                "patient_pin":patient['pin'],
+                "patient_first_name":patient['first_name'],
+                "patient_surname":patient['surname'],
+                
+                "patient_telephone":patient['telephone'],
+                "patient_email":patient['email'],
+                
+                "patient_address_street":patient['address_street'],
+                "patient_address_city":patient['address_city'],
+                "last_appointment_date":lastAppointment['date']
+            })
+        
+        return Response(output, status=200)
+    
+
 
 def GetDoctorById(doctorId):
     return list(models.User.objects.filter(isDoctor = True).filter(id = doctorId).values("first_name", "surname", "specialization", "address_street", "address_city"))
+
+def GetPatientById(patientId):
+    return list(models.User.objects.filter(isDoctor = False).filter(id = patientId).values("pin", "first_name", "surname", "email", "telephone", "address_street", "address_city"))
+
+def GetLastAppointment(patientId, doctorId):
+    return list(models.Appointment.objects.filter(patient_id = patientId).filter(doctor_id = doctorId).order_by("date").values("date"))[0]
+        
+def PatientInOutput(patient_pin, output):
+    for entry in output:
+        if (entry['patient_pin'] == patient_pin):
+            return True
+    return False
 
 def GetAppointmentsById(userId, justFuture):
     if (justFuture):
@@ -204,6 +259,7 @@ def GetAppointmentsById(userId, justFuture):
         doctor_appointments = list(models.Appointment.objects.filter(date__lt=datetime.datetime.now().date()).filter(doctor_id = userId).values("patient_id", "doctor_id", "date", "time"))
     
     patient_appointments.extend(doctor_appointments)
+    # TODO does not work
     
     return patient_appointments
 
