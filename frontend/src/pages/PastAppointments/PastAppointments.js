@@ -155,7 +155,7 @@ const PastAppointmentsPage = () => {
                 var response = await api.get('/user');
                 const data = {
                     id:response.data['user']['id'],
-                    justFuture:false
+                    just_future:false
                 };
                 var response = await api.post(apiEndpoint, data);
                 setReservations(response.data);

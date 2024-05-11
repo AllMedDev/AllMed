@@ -10,7 +10,7 @@ const RegistrationForm = () => {
     const [formData, setFormData] = useState({
         pin: '',
         specialization: '',
-        isDoctor: false,
+        is_doctor: false,
         first_name: '',
         surname: '',
         telephone: '',

@@ -1,14 +1,9 @@
 import datetime
-from hmac import new
-from pydoc import isdata
-from time import strftime
-from urllib import response
-from django.conf import UserSettingsHolder
-from django.http import HttpResponse, JsonResponse, QueryDict
+from django.http import JsonResponse
 from jsonschema import ValidationError
 from allmed_api import models
 import json
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -20,19 +15,13 @@ from rest_framework.permissions import IsAuthenticated
 
 class IsDoctor(IsAuthenticated):
     def has_permission(self, request, view):
-        # if not super().has_permission(request, view):
-        #     return False
-        return request.user.isDoctor
+        return request.user.is_doctor
 
 class IsPatient(IsAuthenticated):
     def has_permission(self, request, view):
-        # if not super().has_permission(request, view):
-        #     return False
-        return (not request.user.isDoctor)
+        return (not request.user.is_doctor)
     
-
 class CsrfExemptSessionAuthentication(SessionAuthentication):
-    
     def enforce_csrf(self, request):
         return
 
@@ -44,10 +33,10 @@ class UserRegister(APIView):
     def post(self, request):
         clean_data = json.loads(request.body)
         serializer = UserRegisterSerializer(data=clean_data)
-        print(clean_data)
+        
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(clean_data)
-            print(user)
+            
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -70,7 +59,7 @@ class UserLogin(APIView):
     
     def post(self, request):
         data = json.loads(request.body)
-        print(data)
+        
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             try:
@@ -94,7 +83,6 @@ class UserView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
     
     def get(self, request):
-        
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
@@ -103,8 +91,9 @@ class UserView(APIView):
 class ListPatients(APIView):
     permission_classes = [permissions.IsAuthenticated, IsDoctor]
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
+    
     def get(self, request):
-        patients = list(models.User.objects.filter(isDoctor=False).values())
+        patients = list(models.User.objects.filter(is_doctor=False).values())
         return JsonResponse(patients, safe=False, status=200)
 
 
@@ -113,14 +102,14 @@ class ListDoctors(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def get(self, request):
-        doctors = list(models.User.objects.filter(isDoctor = True).values('id', 'first_name', 'surname', 'specialization', 'address_street', 'address_city'))
-        print(doctors)
+        doctors = list(models.User.objects.filter(is_doctor = True).values('id', 'first_name', 'surname', 'specialization', 'address_street', 'address_city'))
+        
         return JsonResponse(doctors, safe=False, status=200)
     
     def post(self, request):
-        doctorId = json.loads(request.body)
-        candidate = GetDoctorById(doctorId)
-        print(candidate)
+        doctor_id = json.loads(request.body)
+        candidate = GetDoctorById(doctor_id)
+        
         return JsonResponse(candidate, safe=False, status=200)
 
 class ListAppointments(APIView):
@@ -128,22 +117,20 @@ class ListAppointments(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def post(self, request):
-        target_id = json.loads(request.body)['doctorId']
-        just_future = json.loads(request.body)['justFuture']
         print(request.body)
+        target_id = json.loads(request.body)['doctor_id']
+        just_future = json.loads(request.body)['just_future']
         
         appointments = GetAppointmentsById  (target_id, just_future)     
         
         output = {}
         for entry in appointments:
-            print(entry["date"])
             if (output.get(entry["date"].strftime("%Y-%m-%d"), False) == False):
                 output[entry["date"].strftime("%Y-%m-%d")] = []
                 
             output[entry["date"].strftime("%Y-%m-%d")].append(entry["time"].strftime("%H:%M"))
 
 
-        print(output)    
         return JsonResponse(output, safe=False, status=200)
     
 class AppointmentCreate(APIView):
@@ -165,11 +152,10 @@ class AppointmentsDetailed(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def post(self, request):
-        print(json.loads(request.body))
-        targetId = json.loads(request.body)['id']
-        justFuture = json.loads(request.body)['justFuture']
+        target_id = json.loads(request.body)['id']
+        just_future = json.loads(request.body)['just_future']
         
-        appointments = GetAppointmentsById(targetId, justFuture)
+        appointments = GetAppointmentsById(target_id, just_future)
         
         output = []
         
@@ -192,8 +178,6 @@ class AppointmentsDetailed(APIView):
                 "date":entry['date'],
                 "time":entry['time'],
             })
-            
-        print(output)
         
         return Response(output, status=200)
     
@@ -202,21 +186,19 @@ class DoctorPatientsDetailed(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication, )
     
     def post(self, request):
-        loadedBody = json.loads(request.body)
-        print(loadedBody)
-        targetId = loadedBody['doctorId']
+        loaded_body = json.loads(request.body)
+        target_id = loaded_body['doctor_id']
+        appointments = GetAppointmentsById(target_id, loaded_body['just_future'])
         
-        appointments = GetAppointmentsById(targetId, loadedBody['justFuture'])
-        print(appointments)
         output = []
         
         for entry in appointments:
             patient = GetPatientById(entry['patient_id'])[0]
             if (PatientInOutput(patient['pin'], output)):
                 continue
-            lastAppointment = GetLastAppointment(entry['patient_id'], targetId)
-            if (lastAppointment['date'] == entry['date']):
-                lastAppointment['date'] = "Prvá rezervácia"
+            last_appointment = GetLastAppointment(entry['patient_id'], target_id)
+            if (last_appointment['date'] == entry['date']):
+                last_appointment['date'] = "Prvá rezervácia"
             
             output.append({
                 "patient_pin":patient['pin'],
@@ -228,21 +210,21 @@ class DoctorPatientsDetailed(APIView):
                 
                 "patient_address_street":patient['address_street'],
                 "patient_address_city":patient['address_city'],
-                "last_appointment_date":lastAppointment['date']
+                "last_appointment_date":last_appointment['date']
             })
         
         return Response(output, status=200)
     
 
 
-def GetDoctorById(doctorId):
-    return list(models.User.objects.filter(isDoctor = True).filter(id = doctorId).values("first_name", "surname", "specialization", "address_street", "address_city"))
+def GetDoctorById(doctor_id):
+    return list(models.User.objects.filter(is_doctor = True).filter(id = doctor_id).values("first_name", "surname", "specialization", "address_street", "address_city"))
 
-def GetPatientById(patientId):
-    return list(models.User.objects.filter(isDoctor = False).filter(id = patientId).values("pin", "first_name", "surname", "email", "telephone", "address_street", "address_city"))
+def GetPatientById(patient_id):
+    return list(models.User.objects.filter(is_doctor = False).filter(id = patient_id).values("pin", "first_name", "surname", "email", "telephone", "address_street", "address_city"))
 
-def GetLastAppointment(patientId, doctorId):
-    return list(models.Appointment.objects.filter(patient_id = patientId).filter(doctor_id = doctorId).order_by("date").values("date"))[0]
+def GetLastAppointment(patient_id, doctor_id):
+    return list(models.Appointment.objects.filter(patient_id = patient_id).filter(doctor_id = doctor_id).order_by("date").values("date"))[0]
         
 def PatientInOutput(patient_pin, output):
     for entry in output:
@@ -259,7 +241,6 @@ def GetAppointmentsById(userId, justFuture):
         doctor_appointments = list(models.Appointment.objects.filter(date__lt=datetime.datetime.now().date()).filter(doctor_id = userId).values("patient_id", "doctor_id", "date", "time"))
     
     patient_appointments.extend(doctor_appointments)
-    # TODO does not work
     
     return patient_appointments
 

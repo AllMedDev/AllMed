@@ -3,14 +3,14 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, specialization, isDoctor, first_name, surname, 
+    def create_user(self, email, password, specialization, is_doctor, first_name, surname, 
                     telephone, pin, address_street, address_city):
         if not email:
             raise ValueError("Email is required.")
         if not password:
             raise ValueError("Password is required.")
     
-        user = self.model(pin=pin, isDoctor=isDoctor,
+        user = self.model(pin=pin, is_doctor=is_doctor,
                           specialization=specialization,
                           first_name=first_name, surname=surname, 
                           telephone=telephone, email=email,
@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     pin = models.CharField(max_length=32, unique=True)
     
     specialization = models.CharField(max_length=64, blank=True)
-    isDoctor = models.BooleanField()
+    is_doctor = models.BooleanField()
     
     first_name = models.CharField(max_length=32)
     surname = models.CharField(max_length=32)

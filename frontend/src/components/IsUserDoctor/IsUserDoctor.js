@@ -7,7 +7,7 @@ import axios from 'axios';
 const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
 
 const useIsUserDoctor = () => {
-    const [isDoctor, setIsDoctor] = useState(null);
+    const [is_doctor, setIsDoctor] = useState(null);
 
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const useIsUserDoctor = () => {
                 if (response.status !== 200) {
                     window.location.href = SITE_URL_LOGIN;
                 } else {
-                    setIsDoctor(response.data.user.isDoctor);
+                    setIsDoctor(response.data.user.is_doctor);
                 }
             } catch (error) {
                 window.location.href = SITE_URL_LOGIN;
@@ -27,7 +27,7 @@ const useIsUserDoctor = () => {
         fetchData();
     }, []);
 
-    return isDoctor;
+    return is_doctor;
 };
 
 export default useIsUserDoctor;

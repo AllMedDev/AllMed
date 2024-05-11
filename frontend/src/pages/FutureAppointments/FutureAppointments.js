@@ -29,7 +29,7 @@ const FutereDoctorsAppointmentsPage = () => {
                 var response = await api.get('/user');
                 const data = {
                     id:response.data['user']['id'],
-                    justFuture:true
+                    just_future:true
                 };
                 var response = await api.post(apiEndpoint, data);
                 setReservations(response.data);

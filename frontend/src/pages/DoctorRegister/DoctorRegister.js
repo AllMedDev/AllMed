@@ -12,7 +12,7 @@ const RegistrationForm = () => {
     const [formData, setFormData] = useState({
         pin: '',
         specialization: '',
-        isDoctor: true,
+        is_doctor: true,
         first_name: '',
         surname: '',
         telephone: '',

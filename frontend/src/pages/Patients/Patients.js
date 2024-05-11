@@ -78,15 +78,13 @@ const PatientsPage = () => {
 
   const fetchJson = async () => {
     var doctor = await api.get('/user');
-    console.log(doctor.data);
 
     const data = {
-      doctorId:doctor.data['user']['id'],
-      justFuture:true,
+      doctor_id:doctor.data['user']['id'],
+      just_future:true,
     };
 
     var response = await api.post('/doctor-detailed-patients', data);
-    console.log(response.data);
     setData(response.data);
   };
 

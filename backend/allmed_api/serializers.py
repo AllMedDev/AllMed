@@ -9,14 +9,14 @@ UserModel = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ['email', 'password', 'pin', 'isDoctor', 'specialization', 'first_name', 'surname', 
+        fields = ['email', 'password', 'pin', 'is_doctor', 'specialization', 'first_name', 'surname', 
                   'telephone', 'email', 'address_street', 'address_city']
     
     def create(self, clean_data):
         user_obj = UserModel.objects.create_user(pin = clean_data['pin'],
                                                  password = clean_data['password'],
                                                  specialization = clean_data['specialization'],
-                                                 isDoctor = clean_data['isDoctor'],
+                                                 is_doctor = clean_data['is_doctor'],
                                                  first_name = clean_data['first_name'],
                                                  surname = clean_data['surname'],
                                                  telephone = clean_data['telephone'],
@@ -41,7 +41,7 @@ class UserLoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
          model = UserModel
-         fields = ['id', 'password', 'isDoctor', 'email', 'pin', 'first_name', 'surname', 
+         fields = ['id', 'is_doctor', 'email', 'pin', 'first_name', 'surname', 
                   'telephone', 'email', 'address_street', 'address_city']
          
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -50,7 +50,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
         fields = ['patient_id', 'doctor_id', "date", "time"]
          
     def create(self, clean_data):
-        print(clean_data)
         appointment_obj = models.Appointment.objects.create(patient_id = clean_data['patient_id'],
                                                                        doctor_id = clean_data['doctor_id'],
                                                                        date = clean_data['date'],

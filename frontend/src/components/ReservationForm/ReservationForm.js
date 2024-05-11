@@ -12,14 +12,6 @@ import axios from 'axios';
 
 const skDateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-
-// TBD - just a test data, have to be replaced with fetched api data, change if needed
-// Check also handleSubmit
-const reservedTimesData = {
-    '2024-05-10': ['09:00', '14:00', '14:15', '14:30'],
-    '2024-05-11': ['10:00', '10:15', '15:00'],
-};
-
 const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
 const doctorId = 0;
 
@@ -42,6 +34,7 @@ function generateAvailableTimeSlots(reservedTimes) {
 
 const ReservationForm = (doctorId) => {
     doctorId = doctorId;
+    console.log(doctorId);
     const [selectedDate, setSelectedDate] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
     const [reservedTimes, setReservedTimes] = useState([]);
@@ -56,15 +49,15 @@ const ReservationForm = (doctorId) => {
             const fetchData = async () => {
                 try {
                     const data = {
-                        doctorId:doctorId['doctorId'],
-                        justFuture:true,
-                    }
+                        doctor_id:doctorId['doctorId'],
+                        just_future:true,
+                    };
                     var response = await api.post('/appointments', data);
                     setReservedTimes(response.data[formattedDate]);
                     setAvailableTimeSlots(generateAvailableTimeSlots(response.data[formattedDate]));
                 }
                 catch (e) {
-                    window.location.href = SITE_URL_PROFILE;
+                    // window.location.href = SITE_URL_PROFILE;
                 }
             };
             fetchData();
@@ -99,7 +92,6 @@ const ReservationForm = (doctorId) => {
         };
 
         var response = await api.get('/user');
-        console.log(response);
         var userId = response.data['user']['id'];
 
         const appointmentData = {
@@ -111,7 +103,6 @@ const ReservationForm = (doctorId) => {
 
         await api.post('/new-appointment', appointmentData)
         .then(response => {
-            console.log(response.StatusText);
             if (response.statusText == "Created")
                 window.location.href = SITE_URL_PROFILE;
         });
