@@ -117,7 +117,6 @@ class ListAppointments(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication,)
     
     def post(self, request):
-        print(request.body)
         target_id = json.loads(request.body)['doctor_id']
         just_future = json.loads(request.body)['just_future']
         
