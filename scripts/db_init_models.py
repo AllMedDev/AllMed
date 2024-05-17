@@ -33,7 +33,7 @@ def generate_random_person(is_doctor):
     person = {
         "pin": str(epoch_time := int((time.time() * 1000))),
         "specialization": specialization,
-        "isDoctor": is_doctor,
+        "is_doctor": is_doctor,
         "first_name": first_name,
         "surname": surname,
         "telephone": random.choice(telephones),
