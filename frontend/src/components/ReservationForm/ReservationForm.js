@@ -12,7 +12,6 @@ import axios from 'axios';
 
 const skDateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-
 const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
 
 function generateAvailableTimeSlots(reservedTimes) {
