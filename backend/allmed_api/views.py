@@ -197,8 +197,6 @@ class DoctorPatientsDetailed(APIView):
             if (PatientInOutput(patient['pin'], output)):
                 continue
             last_appointment = GetLastAppointment(entry['patient_id'], target_id)
-            if (last_appointment['date'] == entry['date']):
-                last_appointment['date'] = "Prvá rezervácia"
             
             output.append({
                 "patient_pin":patient['pin'],
