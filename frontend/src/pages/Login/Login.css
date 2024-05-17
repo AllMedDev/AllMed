@@ -68,6 +68,11 @@
     margin-top: 1%;
 }
 
+.invalid-login {
+    color: red;
+    margin-top: 2%;
+}
+
 .regs-separator {
     margin-top: 2%;
 }

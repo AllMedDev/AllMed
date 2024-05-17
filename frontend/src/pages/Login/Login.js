@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 
 import axios from 'axios';
-import { API_URL_BASE, API_URL_LOGIN, API_URL_POST_DOCTOR } from '../../constants/ApiUrls';
-import { SITE_URL_HOME, SITE_URL_LOGIN, SITE_URL_PROFILE, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
+import { API_URL_BASE } from '../../constants/ApiUrls';
+import { SITE_URL_PROFILE, SITE_URL_REGISTRATION_DOCTOR, SITE_URL_REGISTRATION_PATIENT } from '../../constants/SiteUrls';
 
 import './Login.css';
-import App from '../../App';
-
-
-
 
 const api = axios.create({baseURL: API_URL_BASE, withCredentials: true});
 
-
 const LoginPage = () => {
+    const [isValidDataInput, setValidDataInput] = useState(null);
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -43,11 +40,11 @@ const LoginPage = () => {
         if (Object.keys(validationErrors).length === 0) {
             api.post('/login', formData)
             .then((response) => {
-                if (response.statusText == "OK") {
+                if (response.statusText === "OK") {
                     window.location.href = SITE_URL_PROFILE
-                }
+                } 
             })
-            .catch((error) => console.error('Error sending data:', error));
+            .catch((error) => setValidDataInput(false));
         }
     };
 
@@ -100,6 +97,7 @@ const LoginPage = () => {
                     </Row>
                 </Form>
             </div>
+            {isValidDataInput === false && (<span className="invalid-login">Nesprávne prihlasovacie údaje</span>)}
             <span className="regs-separator">Ak ste nie ste registrovaný, využite možnosť registrácie</span>
             <Button variant="primary" type="button" className="doctor-reg-button" onClick={handlePatientRegistrationButtonClick}>
                 Registrovať sa ako pacient
