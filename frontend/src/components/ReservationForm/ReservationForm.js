@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Badge } from 'react-bootstrap';
 
 import { API_URL_BASE } from '../../constants/ApiUrls';
-import { SITE_URL_LOGIN, SITE_URL_PROFILE, SITE_URL_REGISTRATION_DOCTOR } from '../../constants/SiteUrls';
+import { SITE_URL_DOCTORS } from '../../constants/SiteUrls';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,8 +12,8 @@ import axios from 'axios';
 
 const skDateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
+
 const api = axios.create({ baseURL: API_URL_BASE, withCredentials: true });
-const doctorId = 0;
 
 function generateAvailableTimeSlots(reservedTimes) {
     const start = new Date(0, 0, 0, 9, 0); // Start at 09:00
@@ -104,7 +104,7 @@ const ReservationForm = (doctorId) => {
         await api.post('/new-appointment', appointmentData)
         .then(response => {
             if (response.statusText == "Created")
-                window.location.href = SITE_URL_PROFILE;
+                window.location.href = SITE_URL_DOCTORS;
         });
 
 
