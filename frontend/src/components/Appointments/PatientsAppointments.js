@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import './PatientsAppointments.css';
 
-
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -32,12 +31,22 @@ const ReservationList = ({ data, mainHeadline }) => {
     };
 
     const sortReservations = (a, b) => {
-        let comparison;
+        let comparison = 0;
 
         if (sortCriterion === 'date') {
             const dateA = new Date(a.date.split('.').reverse().join('-'));
             const dateB = new Date(b.date.split('.').reverse().join('-'));
             comparison = dateA - dateB;
+            if (comparison === 0) {
+                comparison = a.doctor.localeCompare(b.doctor);
+            }
+        } else if (sortCriterion === 'doctor') {
+            comparison = a.doctor.localeCompare(b.doctor);
+            if (comparison === 0) {
+                const dateA = new Date(a.date.split('.').reverse().join('-'));
+                const dateB = new Date(b.date.split('.').reverse().join('-'));
+                comparison = dateA - dateB;
+            }
         } else {
             comparison = a[sortCriterion].localeCompare(b[sortCriterion]);
         }

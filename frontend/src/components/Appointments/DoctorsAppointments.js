@@ -34,12 +34,22 @@ const ReservationList = ({ data, mainHeadline }) => {
     };
 
     const sortReservations = (a, b) => {
-        let comparison;
+        let comparison = 0;
 
         if (sortCriterion === 'date') {
             const dateA = new Date(a.date.split('.').reverse().join('-'));
             const dateB = new Date(b.date.split('.').reverse().join('-'));
             comparison = dateA - dateB;
+            if (comparison === 0) {
+                comparison = a.patient_surname.localeCompare(b.patient_surname);
+            }
+        } else if (sortCriterion === 'patient_surname') {
+            comparison = a.patient_surname.localeCompare(b.patient_surname);
+            if (comparison === 0) {
+                const dateA = new Date(a.date.split('.').reverse().join('-'));
+                const dateB = new Date(b.date.split('.').reverse().join('-'));
+                comparison = dateA - dateB;
+            }
         } else {
             comparison = a[sortCriterion].localeCompare(b[sortCriterion]);
         }
