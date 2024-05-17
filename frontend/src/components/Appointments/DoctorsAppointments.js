@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import './PatientsAppointments.css';
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+};
+
 const ReservationList = ({ data, mainHeadline }) => {
+    console.log(data);
     const [userIsDoctor, setUserIsDoctor] = useState(null);
 
     const [reservations, setReservations] = useState([]);
@@ -57,9 +66,9 @@ const ReservationList = ({ data, mainHeadline }) => {
                     <Col>
                         <Button className='sort-button'
                             variant="outline-primary"
-                            onClick={() => handleSort('doctor')}
+                            onClick={() => handleSort('patient_surname')}
                         >
-                            Podľa pacienta {sortCriterion === 'doctor' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            Podľa pacienta {sortCriterion === 'patient_surname' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                         </Button>
                     </Col>
                 </Row>
@@ -77,7 +86,7 @@ const ReservationList = ({ data, mainHeadline }) => {
                 <tbody>
                     {sortedReservations.map((reservation) => (
                         <tr key={reservation.id}>
-                            <td>{reservation.date}</td>
+                            <td>{formatDate(reservation.date)}</td>
                             <td>{reservation.time}</td>
                             <td>{reservation.patient_first_name} {reservation.patient_surname}</td>
                             <td>{reservation.patient_address_street}, {reservation.patient_address_city}</td>

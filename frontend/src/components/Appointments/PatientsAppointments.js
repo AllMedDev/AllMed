@@ -2,9 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import './PatientsAppointments.css';
 
-const ReservationList = ({ data, mainHeadline }) => {
-    const [userIsDoctor, setUserIsDoctor] = useState(null);
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+};
+
+const ReservationList = ({ data, mainHeadline }) => {
     const [reservations, setReservations] = useState([]);
     const [sortCriterion, setSortCriterion] = useState('date');
     const [sortOrder, setSortOrder] = useState('asc');
@@ -85,7 +92,7 @@ const ReservationList = ({ data, mainHeadline }) => {
                 <tbody>
                     {sortedReservations.map((reservation) => (
                         <tr key={reservation.id}>
-                            <td>{reservation.date}</td>
+                            <td>{formatDate(reservation.date)}</td>
                             <td>{reservation.time}</td>
                             <td>{reservation.doctor_firstname} {reservation.doctor_surname}</td>
                             <td>{reservation.specialization}</td>
