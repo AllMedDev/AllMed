@@ -45,6 +45,7 @@ class UserRegister(APIView):
     def put(self, request):
         new_user = json.loads(request.body)
         curr_user = models.User.objects.get(pk=new_user['id'])
+        new_user['password'] = curr_user.password
         serializer = UserRegisterSerializer(curr_user, data=new_user)
         if (serializer.is_valid(raise_exception=True)):
             serializer.save()
