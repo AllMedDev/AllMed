@@ -21,11 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-39qn=l%k2n7o_(%#o@^qoie!3g%*cs%42z#u22acm@)w*!wyww'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -134,18 +133,6 @@ CORS_ALLOWED_ORIGINS = (
     'http://127.0.0.1:3000',  # Add your frontend URL here
 )
 
-# # CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_HEADERS = default_headers + (
-#     'Access-Control-Allow-Origin',
-# )
-# COSR_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:3000",  # Add your React frontend URL
-#     'http://localhost:3000'
-# ]
-
-# SESSION_COOKIE_SAMESITE = 'None'
-# CSRF_COOKIE_SAMESITE = 'None'
 
 CORS_ALLOW_HEADERS = [
     'Authorization',
