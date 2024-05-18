@@ -12,8 +12,6 @@ const formatDate = (dateString) => {
 
 const ReservationList = ({ data, mainHeadline }) => {
     console.log(data);
-    const [userIsDoctor, setUserIsDoctor] = useState(null);
-
     const [reservations, setReservations] = useState([]);
     const [sortCriterion, setSortCriterion] = useState('date');
     const [sortOrder, setSortOrder] = useState('asc');
@@ -42,6 +40,9 @@ const ReservationList = ({ data, mainHeadline }) => {
             comparison = dateA - dateB;
             if (comparison === 0) {
                 comparison = a.patient_surname.localeCompare(b.patient_surname);
+                if (comparison === 0) {
+                    comparison = a.time.localeCompare(b.time);
+                }
             }
         } else if (sortCriterion === 'patient_surname') {
             comparison = a.patient_surname.localeCompare(b.patient_surname);
@@ -49,6 +50,9 @@ const ReservationList = ({ data, mainHeadline }) => {
                 const dateA = new Date(a.date.split('.').reverse().join('-'));
                 const dateB = new Date(b.date.split('.').reverse().join('-'));
                 comparison = dateA - dateB;
+                if (comparison === 0) {
+                    comparison = a.time.localeCompare(b.time);
+                }
             }
         } else {
             comparison = a[sortCriterion].localeCompare(b[sortCriterion]);

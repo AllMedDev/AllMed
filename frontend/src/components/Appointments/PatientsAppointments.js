@@ -39,6 +39,9 @@ const ReservationList = ({ data, mainHeadline }) => {
             comparison = dateA - dateB;
             if (comparison === 0) {
                 comparison = a.doctor.localeCompare(b.doctor);
+                if (comparison === 0) {
+                    comparison = a.time.localeCompare(b.time);
+                }
             }
         } else if (sortCriterion === 'doctor') {
             comparison = a.doctor.localeCompare(b.doctor);
@@ -46,7 +49,12 @@ const ReservationList = ({ data, mainHeadline }) => {
                 const dateA = new Date(a.date.split('.').reverse().join('-'));
                 const dateB = new Date(b.date.split('.').reverse().join('-'));
                 comparison = dateA - dateB;
+                if (comparison === 0) {
+                    comparison = a.time.localeCompare(b.time);
+                }
             }
+        } else if (sortCriterion === 'specialization') {
+            comparison = a.specialization.localeCompare(b.specialization);
         } else {
             comparison = a[sortCriterion].localeCompare(b[sortCriterion]);
         }
